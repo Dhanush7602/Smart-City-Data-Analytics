@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Data Results</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .visualization {
+            margin-top: 20px;
+        }
+        .no-data {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        .scrollable-table {
+            max-height: 300px; /* Set a maximum height for the scrollable area */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ddd; /* Add a border */
+            border-radius: 5px; /* Round the corners */
+            padding: 10px; /* Add some padding */
+            background-color: #f9f9f9; /* Light background for contrast */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db; /* Header background color */
+            color: white; /* Header text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Results for {{ city }}</h1>
+
+        {% if results.air_quality %}
+        <div class="section">
+            <h2>Air Quality Metrics</h2>
+            <div class="scrollable-table">{{ summary_stats.air_quality|safe }}</div>
+            <div class="visualization">
+                <h3>Air Quality Trends</h3>
+                {{ charts.air_quality.line_chart|safe }}
+                <h3>Scatter Plot of PM2.5 vs AQI</h3>
+                {{ charts.air_quality.scatter_plot|safe }}
+                <h3>Air Quality Correlation Heatmap</h3>
+                {{ charts.air_quality.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.crime %}
+        <div class="section">
+            <h2>Crime Data</h2>
+            <div class="scrollable-table">{{ summary_stats.crime|safe }}</div>
+            <div class="visualization">
+                <h3>Crime Frequency by Type</h3>
+                {{ charts.crime.bar_chart|safe }}
+                <h3>Crime Occurrences Over Time</h3>
+                {{ charts.crime.time_series|safe }}
+                <h3>Crime Types by Victim Age</h3>
+                {{ charts.crime.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.ict %}
+        <div class="section">
+            <h2>ICT Data</h2>
+            <div class="scrollable-table">{{ summary_stats.ict|safe }}</div>
+            <div class="visualization">
+                <h3>ICT Usage Trends</h3>
+                {{ charts.ict.line_chart|safe }}
+                <h3>ICT Services by Type</h3>
+                {{ charts.ict.bar_chart|safe }}
+                <h3>ICT Infrastructure Heatmap</h3>
+                {{ charts.ict.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not results.air_quality and not results.crime and not results.ict %}
+        <div class="no-data">No data available for the selected city.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

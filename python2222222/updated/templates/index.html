@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Data Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 12px;
+            width: 300px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .container {
+            margin-top: 20px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+        }
+        .section {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .visualization {
+            margin-top: 20px;
+        }
+        .no-data {
+            color: red;
+            font-weight: bold;
+        }
+        .scrollable-table {
+            max-height: 300px; /* Set a maximum height for the scrollable area */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ddd; /* Add a border */
+            border-radius: 5px; /* Round the corners */
+            padding: 10px; /* Add some padding */
+            background-color: #f9f9f9; /* Light background for contrast */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db; /* Header background color */
+            color: white; /* Header text color */
+        }
+    </style>
+</head>
+<body>
+    <h1>Search City Data</h1>
+    <form method="POST">
+        <input type="text" name="city_name" placeholder="Enter City Name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if city %}
+    <div class="container">
+        <h2>Results for {{ city }}</h2>
+
+        {% if results.air_quality %}
+        <div class="section">
+            <h3>Air Quality Metrics</h3>
+            <div class="scrollable-table">{{ summary_stats.air_quality|safe }}</div>
+            <div class="visualization">
+                <h1>Air Quality Trends</h1>
+                {{ charts.air_quality.line_chart|safe }}
+                <h1>Scatter Plot of PM2.5 vs AQI</h1>
+                {{ charts.air_quality.scatter_plot|safe }}
+                <h1>Air Quality Correlation Heatmap</h1>
+                {{ charts.air_quality.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.crime %}
+        <div class="section">
+            <h3>Crime Data</h3>
+            <div class="scrollable-table">{{ summary_stats.crime|safe }}</div>
+            <div class="visualization">
+                <h1>Crime Frequency by Type</h1>
+                {{ charts.crime.bar_chart|safe }}
+                <h1>Crime Occurrences Over Time</h1>
+                {{ charts.crime.time_series|safe }}
+                <h1>Crime Types by Victim Age</h1>
+                {{ charts.crime.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.ict %}
+        <div class="section">
+            <h3>ICT Data</h3>
+            <div class="scrollable-table">{{ summary_stats.ict|safe }}</div>
+            <div class="visualization">
+                <h1>ICT Usage Trends</h1>
+                {{ charts.ict.line_chart|safe }}
+                <h1>ICT Services by Type</h1>
+                {{ charts.ict.bar_chart|safe }}
+                <h1>ICT Infrastructure Heatmap</h1>
+                {{ charts.ict.heatmap|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not results.air_quality and not results.crime and not results.ict %}
+        <div class="no-data">No data available for the selected city.</div>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
